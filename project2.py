@@ -1,12 +1,19 @@
 
 # coding: utf-8
 
-# In[1]:
+# # ML Project2
 
+# In[122]:
 
-# load input - output data and understand the structure
+'''
 
+loading input - output data and explore the dataset
+
+'''
 from scipy.io import loadmat
+from sklearn import decomposition
+
+import matplotlib.pyplot as plt
 
 inputDataPath  = 'data/Proj2FeatVecsSet1.mat'
 outputDataPath = 'data/Proj2TargetOutputsSet1.mat'
@@ -17,11 +24,16 @@ outputDataObj = loadmat(outputDataPath)
 inputData  = inputDataObj['Proj2FeatVecsSet1']
 outputData = outputDataObj['Proj2TargetOutputsSet1']
 
-data = zip(inputData, outputData)
+pca = decomposition.PCA(n_components  = 30)
+X = pca.fit_transform(inputData)
+
+print X[0]
+
+data = zip(X, outputData)
 
 
-# In[2]:
 
+# In[123]:
 
 """
 
@@ -39,8 +51,7 @@ def MyConfusionMatrix(Y, ClassNames):
     return confusion_matrix(Y, ClassNames)    
 
 
-# In[114]:
-
+# In[124]:
 
 """
 
@@ -64,8 +75,8 @@ def MyTrainClassifier(XEstimate, XValidate, Parameters):
     Y_train = np.array([np.where(output == 1)[0][0] for output in list(Y_train)])
     
     # sampling a small amount of training data for finding optimal hyper-parameters
-    X_hyper = X_train[:4000, :]
-    Y_hyper = Y_train[:4000]
+    X_hyper = X_train[:500, :]
+    Y_hyper = Y_train[:500]
     
     X_validate, Y_validate = zip(*XValidate)
         
@@ -73,24 +84,22 @@ def MyTrainClassifier(XEstimate, XValidate, Parameters):
     Y_validate = np.array([np.where(output == 1)[0][0] for output in list(Y_validate)])
     
     # SVM
-    # all vs all pair training
     if Parameters['algorithm'] == 'SVM':
         
-        SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate)
+        SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, False)
     
     elif Parameters['algorithm'] == 'RVM':
         
         RVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate)        
     
-    elif Parameters['algorithm'] == 'Gaussian':
+    elif Parameters['algorithm'] == 'GPR':
      
         Gaussian(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, False)
 
 
-# In[115]:
+# In[125]:
 
-
-def SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate):
+def SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
     
     hyper_param_grid = [
         {'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]},
@@ -103,15 +112,15 @@ def SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate):
     clf = estimator.best_estimator_
     print "found best estimator, training the estimator"
     
-    clf.fit(X_train[:4000, :], Y_train[:4000])
-    
-    print "completed training"
-    
-    print clf.score(X_validate, Y_validate)
+    if train:
+        clf.fit(X_train, Y_train)
+        writeObj('svm_model.pkl', clf)
+    else:
+        clf = readObj('svm_model.pkl')
+        print clf.score(X_validate, Y_validate)
 
 
-# In[122]:
-
+# In[126]:
 
 def RVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate):
     clf = RVC(n_iter=1, kernel='linear')
@@ -126,8 +135,7 @@ def RVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate):
     print clf.score(X_validate, Y_validate)
 
 
-# In[123]:
-
+# In[127]:
 
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.gaussian_process import GaussianProcessClassifier
@@ -139,10 +147,10 @@ def Gaussian(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
     print "gaussian in progress"
         
     if train:
-        kernel_rbf = 1.0 * RBF(length_scale=1.0, length_scale_bounds=(1e-5, 100000.0))
+        kernel_rbf = 1.0 * RBF()
     
         clf = GaussianProcessClassifier(kernel=kernel_rbf, multi_class='one_vs_rest')
-        clf.fit(X_hyper, Y_hyper)
+        clf.fit(X_train[:1000, :], Y_hyper[:1000])
 
         writeObj('gaussian_model', clf)
     else:
@@ -158,16 +166,14 @@ def Gaussian(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
     #print Y_validate[:500]
 
 
-# In[124]:
-
+# In[118]:
 
 def writeObj(name, obj):
     with open(name, 'wb') as output:
-        pickle.dump(clf, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
 
 
-# In[125]:
-
+# In[119]:
 
 def readObj(name):
     with open(name, 'rb') as input:
@@ -176,8 +182,7 @@ def readObj(name):
     return clf
 
 
-# In[126]:
-
+# In[120]:
 
 """
 
@@ -204,14 +209,12 @@ def MyCrossValidate(XTrain, Nf):
         j = j + 1
 
 
-# In[ ]:
-
+# In[121]:
 
 MyCrossValidate(data, 5)
 
 
-# In[98]:
-
+# In[ ]:
 
 class OVO:
     def __init__(self, model):
@@ -290,4 +293,9 @@ class OVO:
             Y.append(probabilities.index(max(probabilities)))
         
         return Y
+
+
+# In[ ]:
+
+
 
