@@ -1,0 +1,97 @@
+fold 1 in progress:
+
+
+confusion matrix: 
+
+    0   1  2   3   4   5
+0  23   0  1   0   0   0
+1   0  17  0   1   0   0
+2   0   0  9   0   0   0
+3   0   3  0  13   1   0
+4   1   0  3   2  10   0
+5   0   0  0   0   0  16
+
+
+accuracy:  0.88
+
+fold 2 in progress:
+
+
+confusion matrix: 
+
+    0   1   2   3   4   5
+0  22   0   0   1   0   0
+1   0  10   0   1   0   0
+2   0   0  14   0   0   0
+3   0   3   0  11   0   0
+4   0   0   1   0  14   0
+5   0   1   0   0   0  22
+
+
+accuracy:  0.93
+
+fold 3 in progress:
+
+
+confusion matrix: 
+
+    0   1   2   3   4   5
+0  16   0   0   0   0   0
+1   1  13   0   2   0   0
+2   1   0  12   0   0   0
+3   0   4   0  15   0   0
+4   0   0   0   0  12   0
+5   0   2   0   0   0  22
+
+
+accuracy:  0.9
+
+fold 4 in progress:
+
+
+confusion matrix: 
+
+    0   1   2  3   4   5
+0  16   0   0  0   1   0
+1   0  15   0  2   0   0
+2   1   2  16  1   1   0
+3   0   0   0  7   0   0
+4   0   0   0  2  20   0
+5   0   1   0  0   0  15
+
+
+accuracy:  0.89
+
+fold 5 in progress:
+
+
+confusion matrix: 
+
+    0   1   2   3   4   5
+0  14   1   0   2   1   0
+1   0  13   0   0   0   0
+2   1   0  15   1   2   0
+3   0   0   2  15   1   0
+4   0   0   1   1  14   0
+5   0   0   0   1   0  15
+
+
+accuracy:  0.86
+
+overall confusion matrix :
+
+confusion matrix: 
+
+      0     1     2     3     4     5
+0  4788   108   170   109   123     0
+1    48  4298     1   556    20     0
+2    85    48  4447   108   256     0
+3    38   460    91  3996   250     0
+4    40    40   280   213  4291     0
+5     1    46    11    18    60  5000
+
+
+accuracy:  0.894
+garbage test1, predicted label :  [5]
+garbage test2, predicted label:  [5]
+
