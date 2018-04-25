@@ -3,7 +3,28 @@
 
 # # ML Project2
 
-# In[339]:
+# In[9]:
+
+# utility methods
+
+def reduce_dimensions(data):
+    pca = decomposition.PCA(n_components = 7)
+    
+    X = pca.fit_transform(data)
+    return X
+
+def readObj(name):
+    with open(name, 'rb') as input:
+        clf = pickle.load(input)
+    
+    return clf
+
+def writeObj(name, obj):
+    with open(name, 'wb') as output:
+        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
+
+
+# In[10]:
 
 '''
 
@@ -26,7 +47,7 @@ outputData = outputDataObj['Proj2TargetOutputsSet1']
 data = zip(inputData, outputData)
 
 
-# In[349]:
+# In[11]:
 
 """
 
@@ -59,7 +80,7 @@ def MyConfusionMatrix(Y, ClassNames):
     return conf_matrix, accuracy
 
 
-# In[350]:
+# In[12]:
 
 def SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
 
@@ -92,7 +113,7 @@ def SVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
         print clf.score(X_validate, Y_validate)
 
 
-# In[351]:
+# In[13]:
 
 def RVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
     clf = OneVsRestClassifier(RVC(n_iter=1))
@@ -112,7 +133,7 @@ def RVM(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
     print clf.predict_proba(X_validate[0])
 
 
-# In[352]:
+# In[14]:
 
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.gaussian_process import GaussianProcessClassifier
@@ -139,7 +160,7 @@ def Gaussian(X_hyper, Y_hyper, X_train, Y_train, X_validate, Y_validate, train):
         print clf.score(X_validate_reduced[:500, :], Y_validate[:500])
 
 
-# In[353]:
+# In[15]:
 
 import numpy as np
 import time
@@ -183,7 +204,7 @@ def MyTrainClassifier(XEstimate, XValidate, Parameters):
     return Y_predict, {'model' : model}
 
 
-# In[354]:
+# In[16]:
 
 """
 
@@ -242,32 +263,12 @@ def MyCrossValidate(XTrain, Nf):
     return YTrain, EstParameters, EstConfMatrices, ConfMatrix
 
 
-# In[ ]:
+# In[17]:
 
 MyCrossValidate(data, 5)
 
 
 # In[ ]:
 
-def writeObj(name, obj):
-    with open(name, 'wb') as output:
-        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
 
-
-# In[ ]:
-
-def readObj(name):
-    with open(name, 'rb') as input:
-        clf = pickle.load(input)
-    
-    return clf
-
-
-# In[ ]:
-
-def reduce_dimensions(data):
-    pca = decomposition.PCA(n_components = 7)
-    
-    X = pca.fit_transform(data)
-    return X
 
